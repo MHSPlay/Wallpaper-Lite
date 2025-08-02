@@ -1,0 +1,194 @@
+#include "../includes.hpp"
+
+c_menu g_menu{};
+
+void EmbraceTheDarkness()
+{
+    ImVec4* colors = ImGui::GetStyle().Colors;
+    colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+    colors[ImGuiCol_WindowBg] = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+    colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    colors[ImGuiCol_PopupBg] = ImVec4(0.19f, 0.19f, 0.19f, 0.92f);
+    colors[ImGuiCol_Border] = ImVec4(0.19f, 0.19f, 0.19f, 0.29f);
+    colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.24f);
+    colors[ImGuiCol_FrameBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+    colors[ImGuiCol_FrameBgHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
+    colors[ImGuiCol_FrameBgActive] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
+    colors[ImGuiCol_TitleBg] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_TitleBgActive] = ImVec4(0.06f, 0.06f, 0.06f, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_MenuBarBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+    colors[ImGuiCol_ScrollbarBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+    colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.34f, 0.34f, 0.34f, 0.54f);
+    colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.40f, 0.40f, 0.40f, 0.54f);
+    colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.56f, 0.56f, 0.56f, 0.54f);
+    colors[ImGuiCol_CheckMark] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
+    colors[ImGuiCol_SliderGrab] = ImVec4(0.34f, 0.34f, 0.34f, 0.54f);
+    colors[ImGuiCol_SliderGrabActive] = ImVec4(0.56f, 0.56f, 0.56f, 0.54f);
+    colors[ImGuiCol_Button] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+    colors[ImGuiCol_ButtonHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
+    colors[ImGuiCol_ButtonActive] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
+    colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+    colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 0.36f);
+    colors[ImGuiCol_HeaderActive] = ImVec4(0.20f, 0.22f, 0.23f, 0.33f);
+    colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
+    colors[ImGuiCol_SeparatorHovered] = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
+    colors[ImGuiCol_SeparatorActive] = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
+    colors[ImGuiCol_ResizeGrip] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
+    colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
+    colors[ImGuiCol_ResizeGripActive] = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
+    colors[ImGuiCol_Tab] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+    colors[ImGuiCol_TabHovered] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+    colors[ImGuiCol_TabActive] = ImVec4(0.20f, 0.20f, 0.20f, 0.36f);
+    colors[ImGuiCol_TabUnfocused] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+    colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+    //colors[ImGuiCol_DockingPreview]         = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
+    //colors[ImGuiCol_DockingEmptyBg]         = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_PlotLines] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_PlotHistogram] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_TableHeaderBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+    colors[ImGuiCol_TableBorderStrong] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+    colors[ImGuiCol_TableBorderLight] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
+    colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+    colors[ImGuiCol_TextSelectedBg] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
+    colors[ImGuiCol_DragDropTarget] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
+    colors[ImGuiCol_NavHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 0.70f);
+    colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.20f);
+    colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.35f);
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+    style.WindowPadding = ImVec2(8.00f, 8.00f);
+    style.FramePadding = ImVec2(4.00f, 2.00f);
+    style.CellPadding = ImVec2(6.00f, 6.00f);
+    style.ItemSpacing = ImVec2(6.00f, 6.00f);
+    style.ItemInnerSpacing = ImVec2(6.00f, 6.00f);
+    style.TouchExtraPadding = ImVec2(0.00f, 0.00f);
+    style.IndentSpacing = 25;
+    style.ScrollbarSize = 15;
+    style.GrabMinSize = 10;
+    style.WindowBorderSize = 1;
+    style.ChildBorderSize = 1;
+    style.PopupBorderSize = 1;
+    style.FrameBorderSize = 1;
+    style.TabBorderSize = 1;
+    style.WindowRounding = 0;
+    style.ChildRounding = 0;
+    style.FrameRounding = 0;
+    style.PopupRounding = 0;
+    style.ScrollbarRounding = 0;
+    style.GrabRounding = 0;
+    style.LogSliderDeadzone = 4;
+    style.TabRounding = 0;
+}
+
+void c_menu::OnRender() 
+{
+    // setup style
+    EmbraceTheDarkness();
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImTextureRef my_tex_id = io.Fonts->TexRef;
+    float my_tex_w = (float)io.Fonts->TexData->Width;
+    float my_tex_h = (float)io.Fonts->TexData->Height;
+    ImVec2 uv_min = ImVec2(0.0f, 0.0f); // Top-left
+    ImVec2 uv_max = ImVec2(1.0f, 1.0f); // Lower-right
+
+    ImGui::SetWindowPos(ImVec2( (GetSystemMetrics(SM_CXSCREEN) / 2), (GetSystemMetrics(SM_CYSCREEN) / 2)));
+    ImGui::SetNextWindowSize(ImVec2(640, 540));
+    ImGui::Begin( "Wallpaper Lite - GUI", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysVerticalScrollbar );
+	{
+
+        // menu bar
+        {
+            if ( ImGui::BeginMenuBar( ) )
+            {
+                if ( ImGui::BeginMenu( "file" ) )
+                {
+                    if ( ImGui::MenuItem( "open folder" ) )
+                        g_utils.OpenFolder( );
+
+                    ImGui::EndMenu( );
+                }
+
+                ImGui::Separator( );
+
+                if ( ImGui::BeginMenu( "options" ) )
+                {
+                   
+
+
+
+
+                    ImGui::EndMenu( );
+                }
+
+                ImGui::Separator( );
+
+                if ( ImGui::BeginMenu( "help" ) )
+                {
+                    
+
+                    ImGui::EndMenu( );
+                }
+
+
+
+                ImGui::EndMenuBar( );
+            }
+        }
+
+        // main
+        { // 15 + 8 + 6 
+            size_t counter = 0;
+            for ( WallpaperFile& file : g_utils.files )
+            {
+                if ( counter % 4 != 0 ) 
+                    ImGui::SameLine();
+                
+                ImGui::PushID(counter);
+
+                ImGui::BeginChild( "file_child", ImVec2( 148, 200 ), true );
+                {
+                    // Здесь ваша логика отображения файла
+                    //ImGui::ImageWithBg(
+                    //    texture_id,          // ID текстуры для этого файла
+                    //    ImVec2(file.width, file.height), // Размеры изображения
+                    //    ImVec2(0, 0),              // UV мин
+                    //    ImVec2(1, 1),              // UV макс
+                    //    ImVec4(0.0f, 0.0f, 0.0f, 1.0f) // Цвет фона
+                    //);
+
+                    if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
+                    {
+                        g_utils.SetupWallpaper( file.name.c_str( ) );
+                    }
+
+                    ImGui::Text( "%s", file.name.c_str( ) );
+                }
+                ImGui::EndChild( );
+
+                ImGui::PopID( );
+
+                counter++;
+            }
+
+
+
+
+
+
+
+        }
+
+
+
+	}
+    ImGui::End( );
+
+}

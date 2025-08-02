@@ -1,8 +1,18 @@
 // windows / stl includes.
 #include <Windows.h>
 #include <WinUser.h>
+#include <filesystem>
+#include <string>
+#include <tlhelp32.h>
+#include <unordered_set>
+#include <direct.h> // mkdir
 #include <dwmapi.h> // DwmExtendFrameIntoClientArea
 
+
+// features
+#include "utils/utils.hpp"
+
+#include "menu/menu.hpp"
 
 
 // third-party
