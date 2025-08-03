@@ -8,14 +8,17 @@ c_utils g_utils{};
 void c_utils::CreateWallpaper()
 {
     std::filesystem::path fs_videoPath = wallpaperEditor.videoPath;
+    std::filesystem::path fs_previewPath = wallpaperEditor.previewPath;
     
     std::string wallpaperFolderPath = "VideoFolder\\" + fs_videoPath.stem().string();
 
     _mkdir(wallpaperFolderPath.c_str());
 
     std::string newVideoPath = "VideoFolder\\" + fs_videoPath.stem().string() + "\\" + fs_videoPath.filename().string();
+    std::string newPreviewPath = "VideoFolder\\" + fs_videoPath.stem().string() + "\\" + fs_previewPath.filename().string();
 
     std::filesystem::copy(fs_videoPath, newVideoPath, std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::copy(fs_previewPath, newPreviewPath, std::filesystem::copy_options::overwrite_existing);
 }
 
 void c_utils::OpenFolder( )
