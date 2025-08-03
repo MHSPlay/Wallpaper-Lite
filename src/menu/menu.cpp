@@ -87,6 +87,54 @@ void EmbraceTheDarkness()
     style.TabRounding = 0;
 }
 
+#include <shobjidl.h> 
+
+void ShowFileDialogButton(const char* buttonName, char* text, size_t bufferSize)
+{
+    if (ImGui::Button(buttonName))
+    {
+        HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+            COINIT_DISABLE_OLE1DDE);
+        if (SUCCEEDED(hr))
+        {
+            IFileOpenDialog* pFileOpen;
+
+            // Create the FileOpenDialog object.
+            hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+                IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+            if (SUCCEEDED(hr))
+            {
+                // Show the Open dialog box.
+                hr = pFileOpen->Show(NULL);
+
+                // Get the file name from the dialog box.
+                if (SUCCEEDED(hr))
+                {
+                    IShellItem* pItem;
+                    hr = pFileOpen->GetResult(&pItem);
+                    if (SUCCEEDED(hr))
+                    {
+                        PWSTR pszFilePath;
+                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+                        // Display the file name to the user.
+                        if (SUCCEEDED(hr))
+                        {
+                            WideCharToMultiByte(CP_UTF8, 0, pszFilePath, -1, text, bufferSize, NULL, NULL);
+                            CoTaskMemFree(pszFilePath);
+                        }
+                        pItem->Release();
+                    }
+                }
+                pFileOpen->Release();
+            }
+            CoUninitialize();
+        }
+    }
+    ImGui::SameLine();
+}
+
 void c_menu::OnRender() 
 {
     // setup style
@@ -150,13 +198,17 @@ void c_menu::OnRender()
             {
                 ImGui::Text("new wallpaper");
 
-                char path_video[MAX_PATH];
+                ShowFileDialogButton("Browse video path", g_utils.wallpaperEditor.videoPath, MAX_PATH);
                 ImGui::InputText("video path", g_utils.wallpaperEditor.videoPath, MAX_PATH);
+                ShowFileDialogButton("Browse preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH);
                 ImGui::InputText("preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH);
                 ImGui::Checkbox("use preview", &g_utils.wallpaperEditor.hasPreview);
 
                 if (ImGui::Button("save"))
+                {
                     g_utils.CreateWallpaper();
+                    ImGui::CloseCurrentPopup();
+                }
 
                 if (ImGui::Button("cancel"))
                     ImGui::CloseCurrentPopup();
@@ -181,10 +233,10 @@ void c_menu::OnRender()
                 {
                     // Здесь ваша логика отображения файла
                     ImGui::ImageWithBg(
-                        file.preview,          // ID текстуры для этого файла
-                        ImVec2(132, 100), // Размеры изображения
-                        ImVec2(0, 0),              // UV мин
-                        ImVec2(1, 1),              // UV макс
+                        file.preview,                  // ID текстуры для этого файла
+                        ImVec2(132, 100),              // Размеры изображения
+                        ImVec2(0, 0),                  // UV мин
+                        ImVec2(1, 1),                  // UV макс
                         ImVec4(0.0f, 0.0f, 0.0f, 1.0f) // Цвет фона
                     );
 
@@ -201,18 +253,7 @@ void c_menu::OnRender()
 
                 counter++;
             }
-
-
-
-
-
-
-
         }
-
-
-
 	}
     ImGui::End( );
-
 }

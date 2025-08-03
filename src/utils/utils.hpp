@@ -14,7 +14,7 @@ typedef struct WallpaperEditor
 {
 	char videoPath[MAX_PATH];
 	char previewPath[MAX_PATH];
-	bool hasPreview;
+	bool hasPreview = true;
 } WallpaperEditor;
 
 class c_utils
