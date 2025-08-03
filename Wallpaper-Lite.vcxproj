@@ -155,6 +155,7 @@
     <ClCompile Include="third-party\imgui\impl\imgui_impl_win32.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\includes.hpp" />
     <ClInclude Include="src\menu\menu.hpp" />
     <ClInclude Include="src\utils\utils.hpp" />
@@ -167,6 +168,12 @@
     <ClInclude Include="third-party\imgui\imstb_textedit.h" />
     <ClInclude Include="third-party\imgui\imstb_truetype.h" />
     <ClInclude Include="third-party\stb_image\stb_image.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="wpl_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Wallpaper-Lite.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
