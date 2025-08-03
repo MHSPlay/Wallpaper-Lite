@@ -99,8 +99,8 @@ void c_menu::OnRender()
     ImVec2 uv_min = ImVec2(0.0f, 0.0f); // Top-left
     ImVec2 uv_max = ImVec2(1.0f, 1.0f); // Lower-right
 
-    ImGui::SetWindowPos(ImVec2( (GetSystemMetrics(SM_CXSCREEN) / 2), (GetSystemMetrics(SM_CYSCREEN) / 2)));
-    ImGui::SetNextWindowSize(ImVec2(640, 540));
+    ImGui::SetWindowPos( ImVec2( ( GetSystemMetrics( SM_CXSCREEN) / 2 ), ( GetSystemMetrics( SM_CYSCREEN ) / 2 ) ) );
+    ImGui::SetNextWindowSize( ImVec2( 640, 540 ) );
     ImGui::Begin( "Wallpaper Lite - GUI", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysVerticalScrollbar );
 	{
 
@@ -120,7 +120,8 @@ void c_menu::OnRender()
 
                 if ( ImGui::BeginMenu( "options" ) )
                 {
-                   
+                    if ( ImGui::MenuItem( "exit app" ) )
+                        exit( 1 );
 
 
 
@@ -144,9 +145,9 @@ void c_menu::OnRender()
         }
 
         // main
-        { // 15 + 8 + 6 
+        {
             size_t counter = 0;
-            for ( WallpaperFile& file : g_utils.files )
+            for ( WallpaperFolder& file : g_utils.wallpapers )
             {
                 if ( counter % 4 != 0 ) 
                     ImGui::SameLine();
@@ -156,20 +157,20 @@ void c_menu::OnRender()
                 ImGui::BeginChild( "file_child", ImVec2( 148, 200 ), true );
                 {
                     // Здесь ваша логика отображения файла
-                    //ImGui::ImageWithBg(
-                    //    texture_id,          // ID текстуры для этого файла
-                    //    ImVec2(file.width, file.height), // Размеры изображения
-                    //    ImVec2(0, 0),              // UV мин
-                    //    ImVec2(1, 1),              // UV макс
-                    //    ImVec4(0.0f, 0.0f, 0.0f, 1.0f) // Цвет фона
-                    //);
+                    ImGui::ImageWithBg(
+                        file.preview,          // ID текстуры для этого файла
+                        ImVec2(132, 100), // Размеры изображения
+                        ImVec2(0, 0),              // UV мин
+                        ImVec2(1, 1),              // UV макс
+                        ImVec4(0.0f, 0.0f, 0.0f, 1.0f) // Цвет фона
+                    );
 
                     if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
                     {
-                        g_utils.SetupWallpaper( file.name.c_str( ) );
+                        g_utils.SetupWallpaper( file.filePath.c_str( ) );
                     }
 
-                    ImGui::Text( "%s", file.name.c_str( ) );
+                    ImGui::Text( "%s", file.fileName.c_str( ) );
                 }
                 ImGui::EndChild( );
 

@@ -18,6 +18,12 @@
     <ClCompile Include="core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\menu\menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="third-party\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -39,15 +45,15 @@
     <ClCompile Include="third-party\imgui\impl\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\menu\menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\includes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\menu\menu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="third-party\imgui\imconfig.h">
@@ -74,10 +80,7 @@
     <ClInclude Include="third-party\imgui\impl\imgui_impl_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\menu\menu.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\utils.hpp">
+    <ClInclude Include="third-party\stb_image\stb_image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

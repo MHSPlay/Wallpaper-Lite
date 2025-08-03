@@ -1,10 +1,14 @@
 #pragma once
 
-typedef struct WallpaperFile
+typedef struct WallpaperFolder
 {
-	void* preview;
-	std::string name;
-} WallpaperFile;
+
+	std::string filePath;
+	std::string folderName;
+	std::string fileName;
+	ImTextureID preview;
+
+} WallpaperFolder;
 
 class c_utils
 {
@@ -12,12 +16,11 @@ public:
 
 	void OpenFolder( );
 
-	void UpdateFolder( );
+	void UpdateFolder( ID3D11Device* device );
 
 	void SetupWallpaper( std::string path );
 
-	std::vector< WallpaperFile > files;
-
+	std::vector< WallpaperFolder > wallpapers;
 private:
 
 	// default
