@@ -92,12 +92,7 @@ void c_menu::OnRender()
     // setup style
     EmbraceTheDarkness();
 
-    ImGuiIO& io = ImGui::GetIO();
-    ImTextureRef my_tex_id = io.Fonts->TexRef;
-    float my_tex_w = (float)io.Fonts->TexData->Width;
-    float my_tex_h = (float)io.Fonts->TexData->Height;
-    ImVec2 uv_min = ImVec2(0.0f, 0.0f); // Top-left
-    ImVec2 uv_max = ImVec2(1.0f, 1.0f); // Lower-right
+    ImGui::ShowDemoWindow();
 
     ImGui::SetWindowPos( ImVec2( ( GetSystemMetrics( SM_CXSCREEN) / 2 ), ( GetSystemMetrics( SM_CYSCREEN ) / 2 ) ) );
     ImGui::SetNextWindowSize( ImVec2( 640, 540 ) );
@@ -106,43 +101,70 @@ void c_menu::OnRender()
 
         // menu bar
         {
-            if ( ImGui::BeginMenuBar( ) )
+            static bool openPopup = false;
+
+            if (ImGui::BeginMenuBar())
             {
-                if ( ImGui::BeginMenu( "file" ) )
+                if (ImGui::BeginMenu("file"))
                 {
-                    if ( ImGui::MenuItem( "open folder" ) )
-                        g_utils.OpenFolder( );
+                    if (ImGui::MenuItem("new wallpaper"))
+                    {
+                        openPopup = true;
+                    }
 
-                    ImGui::EndMenu( );
+                    if (ImGui::MenuItem("open folder"))
+                    {
+                        g_utils.OpenFolder();
+                    }
+
+                    ImGui::EndMenu();
                 }
 
-                ImGui::Separator( );
+                ImGui::Separator();
 
-                if ( ImGui::BeginMenu( "options" ) )
+                if (ImGui::BeginMenu("options"))
                 {
-                    if ( ImGui::MenuItem( "exit app" ) )
-                        exit( 1 );
+                    if (ImGui::MenuItem("exit app"))
+                        exit(1);
 
-
-
-
-                    ImGui::EndMenu( );
+                    ImGui::EndMenu();
                 }
 
-                ImGui::Separator( );
+                ImGui::Separator();
 
-                if ( ImGui::BeginMenu( "help" ) )
+                if (ImGui::BeginMenu("help"))
                 {
-                    
-
-                    ImGui::EndMenu( );
+                    ImGui::EndMenu();
                 }
 
-
-
-                ImGui::EndMenuBar( );
+                ImGui::EndMenuBar();
             }
+
+            if (openPopup)
+            {
+                ImGui::OpenPopup("wallpaper editor popup");
+                openPopup = false;
+            }
+
+            if (ImGui::BeginPopup("wallpaper editor popup"))
+            {
+                ImGui::Text("new wallpaper");
+
+                char path_video[MAX_WINDOWS_PATH_SIZE];
+                ImGui::InputText("video path", g_utils.wallpaperEditor.videoPath, MAX_WINDOWS_PATH_SIZE);
+                ImGui::InputText("preview path", g_utils.wallpaperEditor.previewPath, MAX_WINDOWS_PATH_SIZE);
+                ImGui::Checkbox("use preview", &g_utils.wallpaperEditor.hasPreview);
+
+                if (ImGui::Button("save"))
+
+                if (ImGui::Button("cancel"))
+                    ImGui::CloseCurrentPopup();
+
+                ImGui::EndPopup();
+            }
+
         }
+
 
         // main
         {

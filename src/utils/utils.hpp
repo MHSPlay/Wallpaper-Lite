@@ -10,9 +10,18 @@ typedef struct WallpaperFolder
 
 } WallpaperFolder;
 
+typedef struct WallpaperEditor
+{
+	char videoPath[MAX_WINDOWS_PATH_SIZE];
+	char previewPath[MAX_WINDOWS_PATH_SIZE];
+	bool hasPreview;
+} WallpaperEditor;
+
 class c_utils
 {
 public:
+
+	void CreateWallpaper(WallpaperEditor* editor);
 
 	void OpenFolder( );
 
@@ -21,6 +30,9 @@ public:
 	void SetupWallpaper( std::string path );
 
 	std::vector< WallpaperFolder > wallpapers;
+
+	WallpaperEditor wallpaperEditor;
+
 private:
 
 	// default

@@ -5,6 +5,11 @@
 
 c_utils g_utils{};
 
+void c_utils::CreateWallpaper(WallpaperEditor* editor)
+{
+
+}
+
 void c_utils::OpenFolder( )
 {
 	ShellExecuteA(
