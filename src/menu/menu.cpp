@@ -92,7 +92,7 @@ void c_menu::OnRender()
     // setup style
     EmbraceTheDarkness();
 
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
 
     ImGui::SetWindowPos( ImVec2( ( GetSystemMetrics( SM_CXSCREEN) / 2 ), ( GetSystemMetrics( SM_CYSCREEN ) / 2 ) ) );
     ImGui::SetNextWindowSize( ImVec2( 640, 540 ) );
@@ -150,12 +150,13 @@ void c_menu::OnRender()
             {
                 ImGui::Text("new wallpaper");
 
-                char path_video[MAX_WINDOWS_PATH_SIZE];
-                ImGui::InputText("video path", g_utils.wallpaperEditor.videoPath, MAX_WINDOWS_PATH_SIZE);
-                ImGui::InputText("preview path", g_utils.wallpaperEditor.previewPath, MAX_WINDOWS_PATH_SIZE);
+                char path_video[MAX_PATH];
+                ImGui::InputText("video path", g_utils.wallpaperEditor.videoPath, MAX_PATH);
+                ImGui::InputText("preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH);
                 ImGui::Checkbox("use preview", &g_utils.wallpaperEditor.hasPreview);
 
                 if (ImGui::Button("save"))
+                    g_utils.CreateWallpaper();
 
                 if (ImGui::Button("cancel"))
                     ImGui::CloseCurrentPopup();

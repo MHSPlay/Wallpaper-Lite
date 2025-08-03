@@ -8,8 +8,6 @@
 #include <direct.h> // mkdir
 #include <dwmapi.h> // DwmExtendFrameIntoClientArea
 
-#define MAX_WINDOWS_PATH_SIZE 260
-
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
 

@@ -12,8 +12,8 @@ typedef struct WallpaperFolder
 
 typedef struct WallpaperEditor
 {
-	char videoPath[MAX_WINDOWS_PATH_SIZE];
-	char previewPath[MAX_WINDOWS_PATH_SIZE];
+	char videoPath[MAX_PATH];
+	char previewPath[MAX_PATH];
 	bool hasPreview;
 } WallpaperEditor;
 
@@ -21,7 +21,7 @@ class c_utils
 {
 public:
 
-	void CreateWallpaper(WallpaperEditor* editor);
+	void CreateWallpaper();
 
 	void OpenFolder( );
 
