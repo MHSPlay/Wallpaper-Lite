@@ -167,7 +167,7 @@ void c_menu::OnRender()
 
                     if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
                     {
-                        g_utils.SetupWallpaper( file.filePath.c_str( ) );
+                        g_utils.SetupWallpaper( file.filePath );
                     }
 
                     ImGui::Text( "%s", file.fileName.c_str( ) );

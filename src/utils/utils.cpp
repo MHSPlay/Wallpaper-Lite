@@ -232,13 +232,11 @@ void c_utils::SetupWallpaper( std::string path )
 {
     FindAndKill( L"wallpaperLite-CLI.exe" );
 
-    std::string arguments = "VideoFolder\\" + path;
-
     ShellExecuteA(
         NULL,
         "open",
         "wallpaperLite-CLI.exe",
-        arguments.c_str( ),
+        path.c_str( ),
         NULL,
         SW_HIDE
     );
