@@ -9,6 +9,10 @@ UI wrapper for [WallpaperLite-CLI](https://github.com/LincolnCox29/WallpaperLite
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/MHSPlay/Wallpaper-Lite?style=for-the-badge&logo=git)
 ![GitHub Releases](https://img.shields.io/github/downloads/MHSPlay/Wallpaper-Lite/total?style=for-the-badge&logo=github)
 
+## 🎦 CLI Version
+- https://github.com/LincolnCox29/WallpaperLite-CLI
+- By [LincolCox29](https://github.com/LincolnCox29) and [MHSPlay](https://github.com/MHSPlay)
+
 ## 📌 Features
 - Hardware-accelerated video playback (DXVA2)
 - Seamless desktop integration via `WorkerW` injection
@@ -16,7 +20,7 @@ UI wrapper for [WallpaperLite-CLI](https://github.com/LincolnCox29/WallpaperLite
 - Windows 10/11 support
 
 ## 🚀 Installation
-1. Download __latest release__
+1. Download [__latest release__](https://github.com/MHSPlay/Wallpaper-Lite/releases)
 2. Run __Wallpaper-Lite.exe__
 
 ## 🐛 Known Limitations
