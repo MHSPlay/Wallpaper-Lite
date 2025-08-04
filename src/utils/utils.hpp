@@ -29,6 +29,8 @@ public:
 
 	void SetupWallpaper( std::string path );
 
+	void DeleteWallpaper(std::string filePath);
+
 	std::vector< WallpaperFolder > wallpapers;
 
 	WallpaperEditor wallpaperEditor;

@@ -159,52 +159,6 @@ void c_utils::UpdateFolder( ID3D11Device* device )
 
     if ( curExistFiles < wallpapers.size( ) )
         wallpapers.clear( );
-
-
-
-
-        /*if ( entry.is_regular_file( ) )
-        {*/
-
-            /*std::string ext = entry.path( ).extension( ).string( );
-            std::transform( ext.begin( ), ext.end( ), ext.begin( ), ::tolower );
-
-            
-
-
-
-
-            if ( std::find( video_extensions.begin( ), video_extensions.end( ), ext ) != video_extensions.end( ) )
-            {
-                std::string filename = entry.path( ).filename( ).string( );
-
-                bool already_exists = false;
-                for ( const auto& file : files ) 
-				{
-                    if ( file.folderName == filename ) 
-					{
-                        already_exists = true;
-                        curExistFiles++;
-                        break;
-                    }
-                }
-
-                if ( !already_exists ) 
-				{
-                    WallpaperFolder wall = { NULL, filename };
-                    files.push_back( wall );
-                    curExistFiles++;
-                }
-
-            }*/
-
-        //}
-
-    //}
-
-    //if ( curExistFiles < files.size( ) )
-    //    files.clear( );
-
 }
 
 void FindAndKill(const wchar_t* processName) {
@@ -265,4 +219,17 @@ void c_utils::SetupWallpaper( std::string path )
     );
 
 
+}
+
+void c_utils::DeleteWallpaper(std::string filePath)
+{
+    std::error_code err;
+    std::filesystem::path fs_filePath = filePath;
+    std::filesystem::remove_all(fs_filePath.parent_path(), err);
+
+    if (err)
+    {
+        FindAndKill(L"wallpaperLite-CLI.exe");
+        std::filesystem::remove_all(fs_filePath.parent_path());
+    }
 }

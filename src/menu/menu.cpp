@@ -231,14 +231,38 @@ void c_menu::OnRender()
 
                 ImGui::BeginChild( "file_child", ImVec2( 148, 200 ), true );
                 {
-                    // Здесь ваша логика отображения файла
                     ImGui::ImageWithBg(
-                        file.preview,                  // ID текстуры для этого файла
-                        ImVec2(132, 100),              // Размеры изображения
-                        ImVec2(0, 0),                  // UV мин
-                        ImVec2(1, 1),                  // UV макс
-                        ImVec4(0.0f, 0.0f, 0.0f, 1.0f) // Цвет фона
+                        file.preview,                 
+                        ImVec2(132, 100),             
+                        ImVec2(0, 0),                  
+                        ImVec2(1, 1),                
+                        ImVec4(0.0f, 0.0f, 0.0f, 1.0f)
                     );
+
+                    ImVec2 storeCursorPos = ImGui::GetCursorPos();
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() - 25, 8));
+
+                    if (ImGui::ArrowButton("WallpaperOptions", ImGuiDir_Down))
+                    {
+                        ImGui::OpenPopup("WallpaperOptionsPopup");
+                    }
+
+                    if (ImGui::BeginPopup("WallpaperOptionsPopup", ImGuiWindowFlags_NoMove))
+                    {
+                        if (ImGui::Selectable("Set as startup"))
+                        {
+                            //g_utils.SetAsStartupWallpaper(file.filePath);
+                        }
+
+                        if (ImGui::Selectable("Delete"))
+                        {
+                            g_utils.DeleteWallpaper(file.filePath);
+                        }
+
+                        ImGui::EndPopup();
+                    }
+
+                    ImGui::SetCursorPos(storeCursorPos);
 
                     if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
                     {
@@ -247,6 +271,7 @@ void c_menu::OnRender()
 
                     ImGui::Text( "%s", file.fileName.c_str( ) );
                 }
+
                 ImGui::EndChild( );
 
                 ImGui::PopID( );
