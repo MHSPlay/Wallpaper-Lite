@@ -31,6 +31,10 @@ public:
 
 	void DeleteWallpaper(std::string filePath);
 
+	void SetAsStartupWallpaper(std::string filePath);
+
+	void DisableCurrentStartup();
+
 	std::vector< WallpaperFolder > wallpapers;
 
 	WallpaperEditor wallpaperEditor;

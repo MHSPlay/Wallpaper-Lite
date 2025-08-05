@@ -233,3 +233,40 @@ void c_utils::DeleteWallpaper(std::string filePath)
         std::filesystem::remove_all(fs_filePath.parent_path());
     }
 }
+
+void c_utils::SetAsStartupWallpaper(std::string filePath)
+{
+    wchar_t startupPath[MAX_PATH];
+    if (FAILED(SHGetFolderPathW(NULL, CSIDL_STARTUP, NULL, 0, startupPath))) {
+        return;
+    }
+
+    wchar_t batPath[MAX_PATH];
+    PathCombineW(batPath, startupPath, L"WallpaperLoader.bat");
+
+    std::wofstream batFile(batPath);
+    if (!batFile.is_open()) {
+        return;
+    }
+
+    std::filesystem::path videoFolder = std::filesystem::path(filePath).parent_path().parent_path();
+    std::filesystem::path wpPath = filePath;
+
+    videoFolder = std::filesystem::absolute(videoFolder);
+    wpPath = std::filesystem::absolute(wpPath);
+
+    std::filesystem::path workingDir = videoFolder.parent_path();
+    workingDir = std::filesystem::absolute(workingDir);
+
+    batFile << L"@echo off\n";
+    batFile << L"powershell -Command \"Start-Process -WindowStyle Hidden -FilePath '"
+         << workingDir.wstring() << L"\\wallpaperLite-CLI.exe" << L"' -ArgumentList '" << wpPath.wstring()
+         << L"' -WorkingDirectory '" << workingDir.wstring() << L"'\"\n";
+
+    batFile.close();
+}
+
+void c_utils::DisableCurrentStartup()
+{
+
+}

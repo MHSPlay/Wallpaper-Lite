@@ -175,6 +175,9 @@ void c_menu::OnRender()
                     if (ImGui::MenuItem("exit app"))
                         exit(1);
 
+                    if (ImGui::MenuItem("Disable startup"))
+                        exit(1);
+
                     ImGui::EndMenu();
                 }
 
@@ -251,7 +254,7 @@ void c_menu::OnRender()
                     {
                         if (ImGui::Selectable("Set as startup"))
                         {
-                            //g_utils.SetAsStartupWallpaper(file.filePath);
+                            g_utils.SetAsStartupWallpaper(file.filePath);
                         }
 
                         if (ImGui::Selectable("Delete"))

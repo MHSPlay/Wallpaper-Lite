@@ -2,14 +2,18 @@
 #include <Windows.h>
 #include <WinUser.h>
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <tlhelp32.h>
 #include <thread>
+#include <shlobj.h>
 #include <direct.h> // mkdir
 #include <dwmapi.h> // DwmExtendFrameIntoClientArea
 
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
+#include <shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
 
 // third-party
 #define IMGUI_ENABLE_VIEWPORTS
