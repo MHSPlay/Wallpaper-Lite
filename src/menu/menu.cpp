@@ -175,8 +175,8 @@ void c_menu::OnRender()
                     if (ImGui::MenuItem("exit app"))
                         exit(1);
 
-                    if (ImGui::MenuItem("Disable startup"))
-                        exit(1);
+                    if (ImGui::MenuItem("disable startup"))
+                        g_utils.DisableCurrentStartup();
 
                     ImGui::EndMenu();
                 }

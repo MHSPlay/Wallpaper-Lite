@@ -49,6 +49,14 @@ void c_utils::CreateFolder( )
 		folder_exist = true;
 }
 
+void c_utils::GetStartupBatPath(wchar_t* batPathBuffer)
+{
+    wchar_t startupPath[MAX_PATH];
+    if (FAILED(SHGetFolderPathW(NULL, CSIDL_STARTUP, NULL, 0, startupPath)))
+        return;
+    PathCombineW(batPathBuffer, startupPath, L"WallpaperLoader.bat");
+}
+
 ImTextureID LoadTextureFromFile(const char* filename, ID3D11Device* device)
 {
     if (!device || !filename)
@@ -217,8 +225,6 @@ void c_utils::SetupWallpaper( std::string path )
         NULL,
         SW_HIDE
     );
-
-
 }
 
 void c_utils::DeleteWallpaper(std::string filePath)
@@ -236,13 +242,8 @@ void c_utils::DeleteWallpaper(std::string filePath)
 
 void c_utils::SetAsStartupWallpaper(std::string filePath)
 {
-    wchar_t startupPath[MAX_PATH];
-    if (FAILED(SHGetFolderPathW(NULL, CSIDL_STARTUP, NULL, 0, startupPath))) {
-        return;
-    }
-
     wchar_t batPath[MAX_PATH];
-    PathCombineW(batPath, startupPath, L"WallpaperLoader.bat");
+    GetStartupBatPath(batPath);
 
     std::wofstream batFile(batPath);
     if (!batFile.is_open()) {
@@ -268,5 +269,7 @@ void c_utils::SetAsStartupWallpaper(std::string filePath)
 
 void c_utils::DisableCurrentStartup()
 {
-
+    wchar_t batPath[MAX_PATH];
+    GetStartupBatPath(batPath);
+    std::filesystem::remove(std::filesystem::path(batPath));
 }

@@ -45,7 +45,7 @@ private:
 	bool folder_exist = false;
 	int itemsInFolder = 0;
 	void CreateFolder( );
-
+	void GetStartupBatPath(wchar_t* batPathBuffer);
 };
 
 extern c_utils g_utils;
