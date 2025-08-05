@@ -169,7 +169,7 @@ void c_utils::UpdateFolder( ID3D11Device* device )
         wallpapers.clear( );
 }
 
-void FindAndKill(const wchar_t* processName) {
+void c_utils::FindAndKill(const wchar_t* processName) {
     // Create process snapshot
     HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (hSnapshot == INVALID_HANDLE_VALUE) 

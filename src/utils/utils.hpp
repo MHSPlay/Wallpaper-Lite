@@ -35,6 +35,8 @@ public:
 
 	void DisableCurrentStartup();
 
+	void FindAndKill(const wchar_t* processName);
+
 	std::vector< WallpaperFolder > wallpapers;
 
 	WallpaperEditor wallpaperEditor;

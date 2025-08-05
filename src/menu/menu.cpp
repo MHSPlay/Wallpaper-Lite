@@ -178,15 +178,13 @@ void c_menu::OnRender()
                     if (ImGui::MenuItem("disable startup"))
                         g_utils.DisableCurrentStartup();
 
+                    if (ImGui::MenuItem("disable current wallpaper"))
+                        g_utils.FindAndKill(L"wallpaperLite-CLI.exe");
+
                     ImGui::EndMenu();
                 }
 
                 ImGui::Separator();
-
-                if (ImGui::BeginMenu("help"))
-                {
-                    ImGui::EndMenu();
-                }
 
                 ImGui::EndMenuBar();
             }
@@ -252,12 +250,12 @@ void c_menu::OnRender()
 
                     if (ImGui::BeginPopup("WallpaperOptionsPopup", ImGuiWindowFlags_NoMove))
                     {
-                        if (ImGui::Selectable("Set as startup"))
+                        if (ImGui::Selectable("set as startup"))
                         {
                             g_utils.SetAsStartupWallpaper(file.filePath);
                         }
 
-                        if (ImGui::Selectable("Delete"))
+                        if (ImGui::Selectable("delete"))
                         {
                             g_utils.DeleteWallpaper(file.filePath);
                         }
