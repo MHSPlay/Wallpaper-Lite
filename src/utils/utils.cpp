@@ -260,9 +260,25 @@ void c_utils::SetAsStartupWallpaper(std::string filePath)
     workingDir = std::filesystem::absolute(workingDir);
 
     batFile << L"@echo off\n";
-    batFile << L"powershell -Command \"Start-Process -WindowStyle Hidden -FilePath '"
-         << workingDir.wstring() << L"\\wallpaperLite-CLI.exe" << L"' -ArgumentList '" << wpPath.wstring()
-         << L"' -WorkingDirectory '" << workingDir.wstring() << L"'\"\n";
+    batFile << L"setlocal\n";
+    batFile << L"set \"BAT_PATH=%~f0\"\n";
+    batFile << L"set \"EXE_PATH=" << workingDir.wstring() << L"\\wallpaperLite-CLI.exe" << L"\"\n";
+    batFile << L"set \"WP_PATH=" << wpPath.wstring() << L"\"\n";
+    batFile << L"set \"WORK_DIR=" << workingDir.wstring() << L"\"\n\n";
+
+    batFile << L"if not exist \"%EXE_PATH%\" (\n";
+    batFile << L"    del \"%BAT_PATH%\"\n";
+    batFile << L"    exit /b\n";
+    batFile << L")\n\n";
+
+    batFile << L"pushd \"%WORK_DIR%\" || (\n";
+    batFile << L"    del \"%BAT_PATH%\"\n";
+    batFile << L"    exit /b\n";
+    batFile << L")\n\n";
+
+    batFile << L"powershell -Command \"Start-Process -WindowStyle Hidden -FilePath '%EXE_PATH%' -ArgumentList '%WP_PATH%' -WorkingDirectory '%WORK_DIR%'\"\n";
+    batFile << L"popd\n";
+    batFile << L"endlocal\n";
 
     batFile.close();
 }
