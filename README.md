@@ -18,6 +18,7 @@ UI wrapper for [WallpaperLite-CLI](https://github.com/LincolnCox29/WallpaperLite
 - Seamless desktop integration via `WorkerW` injection
 - Loop playback with audio disabled
 - Windows 10/11 support
+- C/C++ only
 
 ## 🚀 Installation
 1. Download [__latest release__](https://github.com/MHSPlay/Wallpaper-Lite/releases)
