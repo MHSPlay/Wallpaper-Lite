@@ -236,6 +236,7 @@ void c_utils::DeleteWallpaper(std::string filePath)
     if (err)
     {
         FindAndKill(L"wallpaperLite-CLI.exe");
+        Sleep(1000);
         std::filesystem::remove_all(fs_filePath.parent_path());
     }
 }
