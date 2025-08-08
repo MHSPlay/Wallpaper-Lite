@@ -5,42 +5,6 @@
 
 c_utils g_utils{};
 
-void c_utils::CreateWallpaper()
-{
-    if (wallpaperEditor.videoPath == nullptr || 
-        (wallpaperEditor.previewPath == nullptr && wallpaperEditor.hasPreview))
-        return;
-
-    std::filesystem::path fs_videoPath = wallpaperEditor.videoPath;
-    std::filesystem::path fs_previewPath = wallpaperEditor.previewPath;
-    
-    std::string wallpaperFolderPath = "VideoFolder\\" + fs_videoPath.stem().string();
-
-    _mkdir(wallpaperFolderPath.c_str());
-
-    std::string newVideoPath = "VideoFolder\\" + fs_videoPath.stem().string() + "\\" + fs_videoPath.filename().string();
-    std::filesystem::copy(fs_videoPath, newVideoPath, std::filesystem::copy_options::overwrite_existing);
-
-    if (wallpaperEditor.hasPreview)
-    {
-        std::string newPreviewPath = "VideoFolder\\" + fs_videoPath.stem().string() + "\\" + fs_previewPath.filename().string();
-        std::filesystem::copy(fs_previewPath, newPreviewPath, std::filesystem::copy_options::overwrite_existing);
-    }
-}
-
-void c_utils::OpenFolder( )
-{
-	ShellExecuteA(
-		NULL,
-		"open",
-		"VideoFolder",
-		NULL,
-		NULL,
-		SW_SHOWNORMAL
-	);
-
-}
-
 void c_utils::CreateFolder( )
 {
 	if ( _mkdir("VideoFolder") == 0 )
@@ -174,7 +138,6 @@ void c_utils::FindAndKill(const wchar_t* processName) {
     HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (hSnapshot == INVALID_HANDLE_VALUE) 
         return;
-    
 
     PROCESSENTRY32 pe = { 0 };
     pe.dwSize = sizeof(PROCESSENTRY32);
@@ -247,10 +210,9 @@ void c_utils::SetAsStartupWallpaper(std::string filePath)
     GetStartupBatPath(batPath);
 
     std::wofstream batFile(batPath);
-    if (!batFile.is_open()) {
+    if (!batFile.is_open()) 
         return;
-    }
-
+    
     std::filesystem::path videoFolder = std::filesystem::path(filePath).parent_path().parent_path();
     std::filesystem::path wpPath = filePath;
 

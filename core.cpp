@@ -30,13 +30,16 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         return 1;
     }
 
-    std::thread( [ device = g_pd3dDevice ]( ) {
+    std::thread( [ device = g_pd3dDevice ]( ) 
+    {
         
-        while ( true ) {
+        while ( true ) 
+        {
+
             g_utils.UpdateFolder( device );
 
             // save CPU
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
         }
 
     }).detach( );

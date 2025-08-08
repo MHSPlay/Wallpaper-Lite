@@ -1,6 +1,9 @@
 #include "../includes.hpp"
 
-c_menu g_menu{};
+// custom features
+#include "custom/custom.hpp"
+
+c_menu g_menu{ };
 
 void EmbraceTheDarkness()
 {
@@ -87,62 +90,12 @@ void EmbraceTheDarkness()
     style.TabRounding = 0;
 }
 
-#include <shobjidl.h> 
-
-void ShowFileDialogButton(const char* buttonName, char* text, size_t bufferSize)
-{
-    if (ImGui::Button(buttonName))
-    {
-        HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-            COINIT_DISABLE_OLE1DDE);
-        if (SUCCEEDED(hr))
-        {
-            IFileOpenDialog* pFileOpen;
-
-            // Create the FileOpenDialog object.
-            hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
-                IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-
-            if (SUCCEEDED(hr))
-            {
-                // Show the Open dialog box.
-                hr = pFileOpen->Show(NULL);
-
-                // Get the file name from the dialog box.
-                if (SUCCEEDED(hr))
-                {
-                    IShellItem* pItem;
-                    hr = pFileOpen->GetResult(&pItem);
-                    if (SUCCEEDED(hr))
-                    {
-                        PWSTR pszFilePath;
-                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-
-                        // Display the file name to the user.
-                        if (SUCCEEDED(hr))
-                        {
-                            WideCharToMultiByte(CP_UTF8, 0, pszFilePath, -1, text, bufferSize, NULL, NULL);
-                            CoTaskMemFree(pszFilePath);
-                        }
-                        pItem->Release();
-                    }
-                }
-                pFileOpen->Release();
-            }
-            CoUninitialize();
-        }
-    }
-    ImGui::SameLine();
-}
-
-void c_menu::OnRender() 
+auto c_menu::OnRender( ) -> void
 {
     // setup style
-    EmbraceTheDarkness();
+    EmbraceTheDarkness( );
 
-    //ImGui::ShowDemoWindow();
-
-    ImGui::SetWindowPos( ImVec2( ( GetSystemMetrics( SM_CXSCREEN) / 2 ), ( GetSystemMetrics( SM_CYSCREEN ) / 2 ) ) );
+    ImGui::SetWindowPos( ImVec2( ( GetSystemMetrics( SM_CXSCREEN ) / 2 ), ( GetSystemMetrics( SM_CYSCREEN ) / 2 ) ) );
     ImGui::SetNextWindowSize( ImVec2( 640, 540 ) );
     ImGui::Begin( "Wallpaper Lite - GUI", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysVerticalScrollbar );
 	{
@@ -151,74 +104,74 @@ void c_menu::OnRender()
         {
             static bool openPopup = false;
 
-            if (ImGui::BeginMenuBar())
+            if ( ImGui::BeginMenuBar( ) )
             {
-                if (ImGui::BeginMenu("file"))
+                if ( ImGui::BeginMenu( "file" ) )
                 {
-                    if (ImGui::MenuItem("new wallpaper"))
-                    {
+                    if ( ImGui::MenuItem( "new wallpaper" ) )
                         openPopup = true;
-                    }
-
-                    if (ImGui::MenuItem("open folder"))
-                    {
-                        g_utils.OpenFolder();
-                    }
-
-                    ImGui::EndMenu();
+                    
+                    if ( ImGui::MenuItem( "open folder" ) )
+                        g_utils.OpenFolder( );
+                    
+                    ImGui::EndMenu( );
                 }
 
-                ImGui::Separator();
+                ImGui::Separator( );
 
-                if (ImGui::BeginMenu("options"))
+                if ( ImGui::BeginMenu( "options" ) )
                 {
-                    if (ImGui::MenuItem("exit app"))
-                        exit(1);
+                    if ( ImGui::MenuItem( "exit app" ) )
+                        exit( 1 );
 
-                    if (ImGui::MenuItem("disable startup"))
-                        g_utils.DisableCurrentStartup();
+                    if ( ImGui::MenuItem( "disable startup" ) )
+                        g_utils.DisableCurrentStartup( );
 
-                    if (ImGui::MenuItem("disable current wallpaper"))
-                        g_utils.FindAndKill(L"wallpaperLite-CLI.exe");
+                    if ( ImGui::MenuItem( "disable current wallpaper" ) )
+                        g_utils.FindAndKill( L"wallpaperLite-CLI.exe" );
 
-                    ImGui::EndMenu();
+                    ImGui::EndMenu( );
                 }
 
-                ImGui::Separator();
-
-                ImGui::EndMenuBar();
+                ImGui::EndMenuBar( );
             }
 
-            if (openPopup)
+            if ( openPopup )
             {
-                ImGui::OpenPopup("wallpaper editor popup");
+                ImGui::OpenPopup( "wallpaper editor popup" );
                 openPopup = false;
             }
 
-            if (ImGui::BeginPopup("wallpaper editor popup"))
+            if ( ImGui::BeginPopup( "wallpaper editor popup" ) )
             {
-                ImGui::Text("new wallpaper");
+                ImGui::Text( "new wallpaper" );
 
-                ShowFileDialogButton("Browse video path", g_utils.wallpaperEditor.videoPath, MAX_PATH);
-                ImGui::InputText("video path", g_utils.wallpaperEditor.videoPath, MAX_PATH);
-                ShowFileDialogButton("Browse preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH);
-                ImGui::InputText("preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH);
-                ImGui::Checkbox("use preview", &g_utils.wallpaperEditor.hasPreview);
+                customGui::ShowFileSelectButton( "Browse video path", g_utils.wallpaperEditor.videoPath, MAX_PATH );
+                ImGui::InputText( "video path", g_utils.wallpaperEditor.videoPath, MAX_PATH );
 
-                if (ImGui::Button("save"))
+                ImGui::Checkbox( "use preview", &g_utils.wallpaperEditor.hasPreview );
+                if ( g_utils.wallpaperEditor.hasPreview )
                 {
-                    g_utils.CreateWallpaper();
-                    ImGui::CloseCurrentPopup();
+                    customGui::ShowFileSelectButton( "Browse preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH );
+                    ImGui::InputText( "preview path", g_utils.wallpaperEditor.previewPath, MAX_PATH );
                 }
 
-                if (ImGui::Button("cancel"))
-                    ImGui::CloseCurrentPopup();
+                if ( ImGui::Button( "save" ) )
+                {
+                    g_utils.CreateWallpaper( );
+                    g_utils.wallpaperEditor.clear( );
+                    ImGui::CloseCurrentPopup( );
+                }
 
-                ImGui::EndPopup();
+                ImGui::SameLine( );
+
+                if ( ImGui::Button( "cancel" ) )
+                    ImGui::CloseCurrentPopup( );
+
+                ImGui::EndPopup( );
             }
 
         }
-
 
         // main
         {
@@ -226,49 +179,44 @@ void c_menu::OnRender()
             for ( WallpaperFolder& file : g_utils.wallpapers )
             {
                 if ( counter % 4 != 0 ) 
-                    ImGui::SameLine();
+                    ImGui::SameLine( );
                 
-                ImGui::PushID(counter);
+                ImGui::PushID( counter );
 
                 ImGui::BeginChild( "file_child", ImVec2( 148, 200 ), true );
                 {
                     ImGui::ImageWithBg(
                         file.preview,                 
-                        ImVec2(132, 100),             
-                        ImVec2(0, 0),                  
-                        ImVec2(1, 1),                
-                        ImVec4(0.0f, 0.0f, 0.0f, 1.0f)
+                        ImVec2( 132, 100 ),             
+                        ImVec2( 0, 0 ),                  
+                        ImVec2( 1, 1 ),                
+                        ImVec4( 0.0f, 0.0f, 0.0f, 1.0f )
                     );
 
-                    ImVec2 storeCursorPos = ImGui::GetCursorPos();
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() - 25, 8));
+                    ImVec2 storeCursorPos = ImGui::GetCursorPos( );
+                    ImGui::SetCursorPos( ImVec2( ImGui::GetWindowWidth( ) - 25, 8 ) );
 
-                    if (ImGui::ArrowButton("WallpaperOptions", ImGuiDir_Down))
+                    if ( ImGui::ArrowButton( "WallpaperOptions", ImGuiDir_Down ) )
+                        ImGui::OpenPopup( "WallpaperOptionsPopup" );
+                    
+                    if ( ImGui::BeginPopup( "WallpaperOptionsPopup", ImGuiWindowFlags_NoMove ) )
                     {
-                        ImGui::OpenPopup("WallpaperOptionsPopup");
+                        if ( ImGui::Selectable( "set as startup" ) )
+                            g_utils.SetAsStartupWallpaper( file.filePath );
+                        
+                        if ( ImGui::Selectable( "open folder" ) )
+                            g_utils.OpenFolder( file.folderName );
+
+                        if ( ImGui::Selectable( "delete" ) )
+                            g_utils.DeleteWallpaper( file.filePath );
+
+                        ImGui::EndPopup( );
                     }
 
-                    if (ImGui::BeginPopup("WallpaperOptionsPopup", ImGuiWindowFlags_NoMove))
-                    {
-                        if (ImGui::Selectable("set as startup"))
-                        {
-                            g_utils.SetAsStartupWallpaper(file.filePath);
-                        }
-
-                        if (ImGui::Selectable("delete"))
-                        {
-                            g_utils.DeleteWallpaper(file.filePath);
-                        }
-
-                        ImGui::EndPopup();
-                    }
-
-                    ImGui::SetCursorPos(storeCursorPos);
+                    ImGui::SetCursorPos( storeCursorPos );
 
                     if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
-                    {
                         g_utils.SetupWallpaper( file.filePath );
-                    }
 
                     ImGui::Text( "%s", file.fileName.c_str( ) );
                 }

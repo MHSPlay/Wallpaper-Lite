@@ -2,10 +2,7 @@
 
 class c_menu {
 public:
-
-	void OnRender();
-
-private:
+	auto OnRender( ) -> void;
 
 };
 

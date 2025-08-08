@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\includes.hpp" />
+    <ClInclude Include="src\menu\custom\custom.hpp" />
     <ClInclude Include="src\menu\menu.hpp" />
     <ClInclude Include="src\utils\utils.hpp" />
     <ClInclude Include="third-party\imgui\imconfig.h" />
