@@ -188,7 +188,7 @@ auto c_menu::OnRender( ) -> void
                 showDeleteConfirmation = false;
             }
 
-            if ( ImGui::BeginPopup( "Delete Confirmation" ) )
+            if ( ImGui::BeginPopupModal( "Delete Confirmation", nullptr, ImGuiWindowFlags_AlwaysAutoResize ) )
             {
                 ImGui::Text( "Are you sure you want to delete this wallpaper?" );
                 ImGui::Separator( );
