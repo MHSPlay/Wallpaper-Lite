@@ -147,7 +147,7 @@ void c_utils::UpdateFolder( ID3D11Device* device )
             
         }
 
-        wallpapers = std::move(new_wallpapers);
+        wallpapers = std::move( new_wallpapers );
 
     }
     catch ( const std::filesystem::filesystem_error& e ) 

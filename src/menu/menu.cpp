@@ -175,57 +175,124 @@ auto c_menu::OnRender( ) -> void
 
         // main
         {
-            size_t counter = 0;
-            for ( WallpaperFolder& file : g_utils.wallpapers )
-            {
-                if ( counter % 4 != 0 ) 
-                    ImGui::SameLine( );
-                
-                ImGui::PushID( counter );
+            static std::string wallpaperToDelete;
+            static bool showDeleteConfirmation = false;
 
-                ImGui::BeginChild( "file_child", ImVec2( 148, 200 ), true );
+            const float itemWidth = 148.0f;
+            const float itemHeight = 200.0f;
+            const int itemsPerRow = 4;
+
+            if ( showDeleteConfirmation )
+            {
+                ImGui::OpenPopup( "Delete Confirmation" );
+                showDeleteConfirmation = false;
+            }
+
+            if ( ImGui::BeginPopup( "Delete Confirmation" ) )
+            {
+                ImGui::Text( "Are you sure you want to delete this wallpaper?" );
+                ImGui::Separator( );
+
+                const float buttonWidth = 80.0f;
+                const float spacing = ImGui::GetStyle( ).ItemSpacing.x;
+                const float totalWidth = buttonWidth * 2 + spacing;
+                const float windowWidth = ImGui::GetWindowWidth( );
+
+                ImGui::SetCursorPosX( ( windowWidth - totalWidth ) * 0.5f );
+
+                if ( ImGui::Button( "Delete", ImVec2( buttonWidth, 0 ) ) )
+                {
+                    g_utils.DeleteWallpaper( wallpaperToDelete );
+                    wallpaperToDelete.clear( );
+                    ImGui::CloseCurrentPopup( );
+                }
+
+                ImGui::SameLine( );
+
+                if ( ImGui::Button( "Cancel", ImVec2( buttonWidth, 0 ) ) || ImGui::IsKeyPressed( ImGuiKey_Escape ) )
+                {
+                    wallpaperToDelete.clear( );
+                    ImGui::CloseCurrentPopup( );
+                }
+
+                ImGui::EndPopup();
+            }
+
+            const size_t wallpaperCount = g_utils.wallpapers.size( );
+
+            for ( size_t i = 0; i < wallpaperCount; ++i )
+            {
+                const WallpaperFolder& wallpaper = g_utils.wallpapers[ i ];
+
+                if ( i % itemsPerRow != 0 )
+                    ImGui::SameLine();
+                
+                ImGui::PushID( static_cast< int >( i ) );
+
+                if ( ImGui::BeginChild( "wallpaper_item", ImVec2( itemWidth, itemHeight ), true ) )
                 {
                     ImGui::ImageWithBg(
-                        file.preview,                 
-                        ImVec2( 132, 100 ),             
-                        ImVec2( 0, 0 ),                  
-                        ImVec2( 1, 1 ),                
+                        wallpaper.preview,
+                        ImVec2( 132, 100 ),
+                        ImVec2( 0, 0 ),
+                        ImVec2( 1, 1 ),
                         ImVec4( 0.0f, 0.0f, 0.0f, 1.0f )
                     );
 
-                    ImVec2 storeCursorPos = ImGui::GetCursorPos( );
-                    ImGui::SetCursorPos( ImVec2( ImGui::GetWindowWidth( ) - 25, 8 ) );
+                    const ImVec2 storedCursorPos = ImGui::GetCursorPos( );
+                    const float windowWidth = ImGui::GetWindowWidth( );
 
-                    if ( ImGui::ArrowButton( "WallpaperOptions", ImGuiDir_Down ) )
-                        ImGui::OpenPopup( "WallpaperOptionsPopup" );
-                    
-                    if ( ImGui::BeginPopup( "WallpaperOptionsPopup", ImGuiWindowFlags_NoMove ) )
+                    ImGui::SetCursorPos( ImVec2( windowWidth - 25, 8 ) );
+
+                    if ( ImGui::ArrowButton( "options", ImGuiDir_Down ) )
+                        ImGui::OpenPopup( "options_popup" );
+
+                    if ( ImGui::BeginPopup( "options_popup", ImGuiWindowFlags_NoMove ) )
                     {
-                        if ( ImGui::Selectable( "set as startup" ) )
-                            g_utils.SetAsStartupWallpaper( file.filePath );
+                        if ( ImGui::MenuItem( "set as startup" ) )
+                            g_utils.SetAsStartupWallpaper( wallpaper.filePath );
                         
-                        if ( ImGui::Selectable( "open folder" ) )
-                            g_utils.OpenFolder( file.folderName );
+                        if ( ImGui::MenuItem( "open folder" ) )
+                            g_utils.OpenFolder( wallpaper.folderName );
 
-                        if ( ImGui::Selectable( "delete" ) )
-                            g_utils.DeleteWallpaper( file.filePath );
+                        if ( ImGui::MenuItem( "delete", nullptr, false, true ) )
+                        {
+                            wallpaperToDelete = wallpaper.filePath;
+                            showDeleteConfirmation = true;
+                        }
 
                         ImGui::EndPopup( );
                     }
 
-                    ImGui::SetCursorPos( storeCursorPos );
+                    ImGui::SetCursorPos( storedCursorPos );
 
-                    if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
-                        g_utils.SetupWallpaper( file.filePath );
+                    if ( ImGui::IsWindowHovered( ) && ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && !ImGui::IsAnyItemHovered( ) )
+                        g_utils.SetupWallpaper( wallpaper.filePath );
 
-                    ImGui::Text( "%s", file.fileName.c_str( ) );
+                    const float availableWidth = ImGui::GetWindowWidth( ) - ImGui::GetStyle( ).WindowPadding.x * 2;
+                    const std::string& fileName = wallpaper.fileName;
+
+                    if ( ImGui::CalcTextSize( fileName.c_str( ) ).x > availableWidth )
+                    {
+                        std::string truncatedName = fileName;
+                        while ( ImGui::CalcTextSize( ( truncatedName + "..." ).c_str( ) ).x > availableWidth && truncatedName.length( ) > 1 )
+                            truncatedName.pop_back( );
+
+                        ImGui::TextWrapped( "%s...", truncatedName.c_str( ) );
+
+                        if ( ImGui::IsItemHovered( ) )
+                        {
+                            ImGui::BeginTooltip( );
+                            ImGui::Text( "%s", fileName.c_str( ) );
+                            ImGui::EndTooltip( );
+                        }
+                    }
+                    else
+                        ImGui::Text( "%s", fileName.c_str( ) );
                 }
 
                 ImGui::EndChild( );
-
                 ImGui::PopID( );
-
-                counter++;
             }
         }
 	}
