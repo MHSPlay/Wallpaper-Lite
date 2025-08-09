@@ -2,6 +2,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../third-party/stb_image/stb_image.hpp"
+#include <unordered_set>
 
 c_utils g_utils{};
 
@@ -38,8 +39,10 @@ ImTextureID LoadTextureFromFile(const char* filename, ID3D11Device* device)
     desc.ArraySize = 1;
     desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     desc.SampleDesc.Count = 1;
+    desc.SampleDesc.Quality = 0;
     desc.Usage = D3D11_USAGE_DEFAULT;
-    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+    desc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = image_data;
@@ -62,75 +65,95 @@ ImTextureID LoadTextureFromFile(const char* filename, ID3D11Device* device)
 
 void c_utils::UpdateFolder( ID3D11Device* device ) 
 {
-	if ( !folder_exist ) {
-		CreateFolder( );
-		return;
-	}
-
-	static const std::vector<std::string> video_extensions = {
-		".mp4", ".webm", ".mkv", ".flv", ".avi",
-		".mov", ".wmv", ".mpg", ".mpeg", ".3gp"
-	};
-
-    static const std::vector<std::string> photo_extensions = {
-        ".jpeg", ".jpg", ".png", ".svg", ".bmp", 
-        ".webp"
-	};
-
-    int curExistFiles = 0;
-    for ( const auto& entry : std::filesystem::directory_iterator( "VideoFolder" ) )
+    if ( !folder_exist ) 
     {
-        WallpaperFolder wall = { };
-
-        std::string filename = entry.path( ).filename( ).string( );
-
-        bool already_exists = false;
-        for ( const auto& file : wallpapers )
-        {
-            if ( file.folderName == filename )
-            {
-                already_exists = true;
-                curExistFiles++;
-                break;
-            }
-        }
-
-        if ( !already_exists )
-        {
-            for ( const auto& insideFolder : std::filesystem::directory_iterator( entry ) )
-            {
-                // any files like txt or video
-                if ( insideFolder.is_regular_file( ) )
-                {
-                    std::string ext = insideFolder.path( ).extension( ).string( );
-                    std::transform( ext.begin( ), ext.end( ), ext.begin( ), ::tolower );
-                
-                    // SAVE FILE NAME AND PATH
-                    if ( std::find( video_extensions.begin( ), video_extensions.end( ), ext ) != video_extensions.end( ) )
-                    {
-                        wall.filePath = insideFolder.path( ).string( );
-                        wall.fileName = insideFolder.path( ).filename( ).string( );
-                        wall.folderName = entry.path( ).filename( ).string( );
-                    }
-
-                    if ( std::find( photo_extensions.begin( ), photo_extensions.end( ), ext ) != photo_extensions.end( ) )
-                    {
-                        std::string path = insideFolder.path().string();
-                        wall.preview = LoadTextureFromFile( path.c_str(), device );
-                    }
-            
-                }
-
-            }
-
-            wallpapers.push_back( wall );
-            curExistFiles++;
-        }
-
+        CreateFolder( );
+        return;
     }
 
-    if ( curExistFiles < wallpapers.size( ) )
-        wallpapers.clear( );
+    static const std::unordered_set<std::string> video_extensions = 
+    {
+        ".mp4", ".webm", ".mkv", ".flv", ".avi",
+        ".mov", ".wmv", ".mpg", ".mpeg", ".3gp"
+    };
+
+    static const std::unordered_set<std::string> photo_extensions = 
+    {
+        ".jpeg", ".jpg", ".png", ".svg", ".bmp", ".webp"
+    };
+
+    std::vector<WallpaperFolder> new_wallpapers;
+    std::unordered_set<std::string> existing_folders;
+
+    for ( const auto& wallpaper : wallpapers ) 
+        existing_folders.insert( wallpaper.folderName );
+
+    try 
+    {
+        for ( const auto& entry : std::filesystem::directory_iterator( "VideoFolder" ) ) 
+        {
+            if ( !entry.is_directory( ) ) 
+                continue;
+
+            std::string folder_name = entry.path( ).filename( ).string( );
+
+            if ( existing_folders.count( folder_name ) ) 
+            {
+                auto it = std::find_if( wallpapers.begin( ), wallpapers.end( ),
+                [ &folder_name ]( const WallpaperFolder& w ) {
+                    return w.folderName == folder_name;
+                });
+
+                if ( it != wallpapers.end( ) ) 
+                    new_wallpapers.push_back( *it );
+                
+                continue;
+            }
+
+            WallpaperFolder wall{ };
+            wall.folderName = folder_name;
+
+            bool found_video = false;
+            bool found_preview = false;
+
+            for ( const auto& file_entry : std::filesystem::directory_iterator( entry ) ) 
+            {
+                if ( !file_entry.is_regular_file( ) )
+                    continue;
+
+                std::string ext = file_entry.path( ).extension( ).string( );
+                std::transform( ext.begin( ), ext.end( ), ext.begin( ), ::tolower );
+
+                if ( !found_video && video_extensions.count( ext ) ) 
+                {
+                    wall.filePath = file_entry.path( ).string( );
+                    wall.fileName = file_entry.path( ).filename( ).string( );
+                    found_video = true;
+                }
+
+                if ( !found_preview && photo_extensions.count( ext ) ) 
+                {
+                    std::string path = file_entry.path( ).string( );
+                    wall.preview = LoadTextureFromFile( path.c_str( ), device );
+                    found_preview = true;
+                }
+
+                if ( found_video && found_preview ) 
+                    break;
+            }
+
+            if ( found_video ) 
+                new_wallpapers.push_back( std::move( wall ) );
+            
+        }
+
+        wallpapers = std::move(new_wallpapers);
+
+    }
+    catch ( const std::filesystem::filesystem_error& e ) 
+    {
+        throw std::runtime_error( "[!] Filesystem error: " + std::string( e.what( ) ) );
+    }
 }
 
 void c_utils::FindAndKill(const wchar_t* processName) {

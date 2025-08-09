@@ -123,8 +123,12 @@ public:
 
 	void FindAndKill(const wchar_t* processName);
 
-	std::vector< WallpaperFolder > wallpapers;
 
+
+
+
+
+	std::vector< WallpaperFolder > wallpapers;
 	WallpaperEditor wallpaperEditor;
 
 private:
