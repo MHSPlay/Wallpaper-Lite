@@ -24,7 +24,21 @@ UI wrapper for [WallpaperLite-CLI](https://github.com/LincolnCox29/WallpaperLite
 1. Download [__latest release__](https://github.com/MHSPlay/Wallpaper-Lite/releases)
 2. Run __Wallpaper-Lite.exe__
 
+## ⚙️ Performance Considerations
+**GPU load depends critically on your video source properties**:
+```markdown
+|-----------------|----------------------------|----------------------------|-------------------------|
+| Factor          | Low Load                   | High Load                  | Recommendation          |
+|-----------------|----------------------------|----------------------------|-------------------------|
+|   Format        | MP4, MKV                   | AVI, MOV                   | Use MP4 containers      |
+|   Resolution    | ≤ Screen resolution        | 4K/8K                      | Match desktop resolution|
+|   Bitrate       | 5-15 Mbps (1080p)          | 50+ Mbps                   | ≤20 Mbps for 1080p      |
+|   Codec         | H.264 (AVC)                | HEVC, VP9, AV1             | Prefer H.264            |
+|   FPS           | 24-30 FPS                  | 60-120 FPS                 | Cap at 30 FPS           |
+|-----------------|----------------------------|----------------------------|-------------------------|
+```
+
 ## 🐛 Known Limitations
 - No volume control (audio disabled)
-- Requires console window to remain open
 - Single monitor support only
+- Windows only
