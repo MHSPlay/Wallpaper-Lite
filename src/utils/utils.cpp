@@ -173,7 +173,7 @@ void c_utils::FindAndKill(const wchar_t* processName) {
 
     bool found = false;
     do {
-        if (_wcsicmp(pe.szExeFile, processName) == 0) {
+        if (_wcsicmp((const wchar_t*)pe.szExeFile, processName) == 0) {
             // Open the process with terminate rights
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pe.th32ProcessID);
             if (hProcess != NULL) {

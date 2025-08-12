@@ -16,7 +16,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     // Create application window
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"Wallpaper Lite", nullptr };
     ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindow(wc.lpszClassName, L"Wallpaper Lite", WS_POPUP, 0, 0, 5, 5, nullptr, nullptr, wc.hInstance, nullptr);
+    HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Wallpaper Lite", WS_POPUP, 0, 0, 5, 5, nullptr, nullptr, wc.hInstance, nullptr);
 
     SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
     MARGINS margin = { -1 };
