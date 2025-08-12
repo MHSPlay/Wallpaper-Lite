@@ -42,3 +42,4 @@ UI wrapper for [WallpaperLite-CLI](https://github.com/LincolnCox29/WallpaperLite
 - No volume control (audio disabled)
 - Single monitor support only
 - Windows only
+- The application **does not automatically convert** your video files to optimal formats. For best performance, you must pre-process videos using external tools. Unoptimized videos may cause high GPU usage.
