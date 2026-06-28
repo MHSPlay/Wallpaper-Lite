@@ -90,14 +90,16 @@ void EmbraceTheDarkness()
     style.TabRounding = 0;
 }
 
-auto c_menu::OnRender( ) -> void
+auto c_menu::OnRender( bool& exit ) -> void
 {
+    bool window_open = !exit;
+
     // setup style
     EmbraceTheDarkness( );
 
     ImGui::SetWindowPos( ImVec2( ( GetSystemMetrics( SM_CXSCREEN ) / 2 ), ( GetSystemMetrics( SM_CYSCREEN ) / 2 ) ) );
     ImGui::SetNextWindowSize( ImVec2( 640, 540 ) );
-    ImGui::Begin( "Wallpaper Lite - GUI", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysVerticalScrollbar );
+    ImGui::Begin( "Wallpaper Lite - GUI", &window_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysVerticalScrollbar );
 	{
 
         // menu bar
@@ -121,8 +123,6 @@ auto c_menu::OnRender( ) -> void
 
                 if ( ImGui::BeginMenu( "options" ) )
                 {
-                    if ( ImGui::MenuItem( "exit app" ) )
-                        exit( 1 );
 
                     if ( ImGui::MenuItem( "disable startup" ) )
                         g_utils.DisableCurrentStartup( );
@@ -297,4 +297,5 @@ auto c_menu::OnRender( ) -> void
         }
 	}
     ImGui::End( );
+    exit = !window_open;
 }

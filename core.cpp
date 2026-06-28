@@ -126,7 +126,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         // Menu
         {
-            g_menu.OnRender();
+            g_menu.OnRender( done );
         }
 
         // Rendering

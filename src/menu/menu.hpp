@@ -2,7 +2,7 @@
 
 class c_menu {
 public:
-	auto OnRender( ) -> void;
+	auto OnRender( bool& exit ) -> void;
 
 };
 
