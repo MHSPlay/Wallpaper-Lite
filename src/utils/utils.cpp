@@ -205,8 +205,8 @@ void c_utils::SetupWallpaper( std::string path, int volume, bool mute )
 
     std::string args = "\"" + path + "\"";
     args += " --volume=" + std::to_string( volume );
-    if ( mute )
-        args += " --mute";
+    //if ( mute )
+    //    args += " --mute";
 
     ShellExecuteA(
         NULL,
@@ -232,28 +232,32 @@ void c_utils::DeleteWallpaper(std::string filePath)
     }
 }
 
-void c_utils::SetAsStartupWallpaper(std::string filePath)
+void c_utils::SetAsStartupWallpaper(const std::string& filePath, int volume, bool mute)
 {
     wchar_t batPath[MAX_PATH];
     GetStartupBatPath(batPath);
 
     std::wofstream batFile(batPath);
-    if (!batFile.is_open()) 
+    if (!batFile.is_open())
         return;
-    
-    std::filesystem::path videoFolder = std::filesystem::path(filePath).parent_path().parent_path();
-    std::filesystem::path wpPath = filePath;
 
-    videoFolder = std::filesystem::absolute(videoFolder);
-    wpPath = std::filesystem::absolute(wpPath);
+    const std::filesystem::path wpPath =
+        std::filesystem::absolute(filePath);
 
-    std::filesystem::path workingDir = videoFolder.parent_path();
-    workingDir = std::filesystem::absolute(workingDir);
+    const std::filesystem::path videoFolder =
+        wpPath.parent_path().parent_path();
+
+    const std::filesystem::path workingDir =
+        std::filesystem::absolute(videoFolder.parent_path());
+
+    const std::filesystem::path exePath =
+        workingDir / L"wallpaperLite-CLI.exe";
 
     batFile << L"@echo off\n";
     batFile << L"setlocal\n";
+
     batFile << L"set \"BAT_PATH=%~f0\"\n";
-    batFile << L"set \"EXE_PATH=" << workingDir.wstring() << L"\\wallpaperLite-CLI.exe" << L"\"\n";
+    batFile << L"set \"EXE_PATH=" << exePath.wstring() << L"\"\n";
     batFile << L"set \"WP_PATH=" << wpPath.wstring() << L"\"\n";
     batFile << L"set \"WORK_DIR=" << workingDir.wstring() << L"\"\n\n";
 
@@ -267,7 +271,19 @@ void c_utils::SetAsStartupWallpaper(std::string filePath)
     batFile << L"    exit /b\n";
     batFile << L")\n\n";
 
-    batFile << L"powershell -Command \"Start-Process -WindowStyle Hidden -FilePath '%EXE_PATH%' -ArgumentList '%WP_PATH%' -WorkingDirectory '%WORK_DIR%'\"\n";
+    batFile << L"powershell.exe -NoProfile -WindowStyle Hidden -Command ";
+    batFile << L"\"Start-Process -WindowStyle Hidden ";
+    batFile << L"-FilePath '%EXE_PATH%' ";
+    batFile << L"-WorkingDirectory '%WORK_DIR%' ";
+    batFile << L"-ArgumentList '";
+    batFile << L"\\\"%WP_PATH%\\\"";
+    batFile << L" --volume=" << volume;
+
+    if (mute)
+        batFile << L" --mute";
+
+    batFile << L"'\"\n";
+
     batFile << L"popd\n";
     batFile << L"endlocal\n";
 

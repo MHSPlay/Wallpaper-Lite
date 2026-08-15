@@ -116,8 +116,17 @@ public:
 
     void SaveWallpaperVolume(const WallpaperFolder& wallpaper)
     {
-        std::string configPath = wallpaper.folderName + "\\volume.cfg";
-        std::ofstream file(configPath);
+        std::filesystem::path configDir = std::filesystem::current_path() / "VideoFolder" / wallpaper.folderName;
+        std::filesystem::path configFile = configDir / "volume.cfg";
+
+        std::error_code ec;
+        if (!std::filesystem::create_directories(configDir, ec)) {
+            if (ec && ec != std::errc::file_exists) {
+                throw std::runtime_error("error: " + ec.message());
+            }
+        }
+
+        std::ofstream file(configFile);
         if (file.is_open())
         {
             file << wallpaper.volume << "\n";
@@ -149,7 +158,7 @@ public:
 
 	void DeleteWallpaper(std::string filePath);
 
-	void SetAsStartupWallpaper(std::string filePath);
+	void SetAsStartupWallpaper(const std::string& filePath, int volume, bool mute);
 
 	void DisableCurrentStartup();
 

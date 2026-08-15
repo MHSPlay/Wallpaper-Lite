@@ -250,7 +250,7 @@ auto c_menu::OnRender( bool& exit ) -> void
                     if ( ImGui::BeginPopup( "options_popup", ImGuiWindowFlags_NoMove ) )
                     {
                         if ( ImGui::MenuItem( "set as startup" ) )
-                            g_utils.SetAsStartupWallpaper( wallpaper.filePath );
+                            g_utils.SetAsStartupWallpaper( wallpaper.filePath, wallpaper.volume, wallpaper.muted );
                         
                         if ( ImGui::MenuItem( "open folder" ) )
                             g_utils.OpenFolder( wallpaper.folderName );
