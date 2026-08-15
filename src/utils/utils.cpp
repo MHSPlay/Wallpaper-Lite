@@ -199,15 +199,20 @@ void c_utils::FindAndKill(const wchar_t* processName) {
     }
 }
 
-void c_utils::SetupWallpaper( std::string path )
+void c_utils::SetupWallpaper( std::string path, int volume, bool mute )
 {
     FindAndKill( L"wallpaperLite-CLI.exe" );
+
+    std::string args = "\"" + path + "\"";
+    args += " --volume=" + std::to_string( volume );
+    if ( mute )
+        args += " --mute";
 
     ShellExecuteA(
         NULL,
         "open",
         "wallpaperLite-CLI.exe",
-        path.c_str( ),
+        args.c_str( ),
         NULL,
         SW_HIDE
     );

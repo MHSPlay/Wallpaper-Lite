@@ -222,7 +222,7 @@ auto c_menu::OnRender( bool& exit ) -> void
 
             for ( size_t i = 0; i < wallpaperCount; ++i )
             {
-                const WallpaperFolder& wallpaper = g_utils.wallpapers[ i ];
+                WallpaperFolder& wallpaper = g_utils.wallpapers[ i ];
 
                 if ( i % itemsPerRow != 0 )
                     ImGui::SameLine();
@@ -255,6 +255,17 @@ auto c_menu::OnRender( bool& exit ) -> void
                         if ( ImGui::MenuItem( "open folder" ) )
                             g_utils.OpenFolder( wallpaper.folderName );
 
+                        ImGui::Separator();
+
+                        ImGui::SetNextItemWidth(150.0f);
+                        if (ImGui::SliderInt("volume", &wallpaper.volume, 0, 100, "%d%%"))
+                            g_utils.SaveWallpaperVolume(wallpaper);
+
+                        if (ImGui::Checkbox("mute", &wallpaper.muted))
+                            g_utils.SaveWallpaperVolume(wallpaper);
+
+                        ImGui::Separator();
+
                         if ( ImGui::MenuItem( "delete", nullptr, false, true ) )
                         {
                             wallpaperToDelete = wallpaper.filePath;
@@ -267,7 +278,7 @@ auto c_menu::OnRender( bool& exit ) -> void
                     ImGui::SetCursorPos( storedCursorPos );
 
                     if ( ImGui::IsWindowHovered( ) && ImGui::IsMouseClicked( ImGuiMouseButton_Left ) && !ImGui::IsAnyItemHovered( ) )
-                        g_utils.SetupWallpaper( wallpaper.filePath );
+                        g_utils.SetupWallpaper( wallpaper.filePath, wallpaper.volume, wallpaper.muted );
 
                     const float availableWidth = ImGui::GetWindowWidth( ) - ImGui::GetStyle( ).WindowPadding.x * 2;
                     const std::string& fileName = wallpaper.fileName;

@@ -7,6 +7,9 @@ typedef struct WallpaperFolder
 	std::string fileName;
 	ImTextureID preview;
 
+    int volume = 100;
+    bool muted = false;
+
 } WallpaperFolder;
 
 typedef struct WallpaperEditor
@@ -111,9 +114,38 @@ public:
 
     }
 
+    void SaveWallpaperVolume(const WallpaperFolder& wallpaper)
+    {
+        std::string configPath = wallpaper.folderName + "\\volume.cfg";
+        std::ofstream file(configPath);
+        if (file.is_open())
+        {
+            file << wallpaper.volume << "\n";
+            file << (wallpaper.muted ? 1 : 0) << "\n";
+        }
+    }
+
+    void LoadWallpaperVolume(WallpaperFolder& wallpaper)
+    {
+        std::string configPath = wallpaper.folderName + "\\volume.cfg";
+        std::ifstream file(configPath);
+        if (file.is_open())
+        {
+            int vol = 100, mute = 0;
+            file >> vol >> mute;
+            wallpaper.volume = std::clamp(vol, 0, 100);
+            wallpaper.muted = (mute != 0);
+        }
+        else
+        {
+            wallpaper.volume = 100;
+            wallpaper.muted = false;
+        }
+    }
+
 	void UpdateFolder( ID3D11Device* device );
 
-	void SetupWallpaper( std::string path );
+	void SetupWallpaper( std::string path, int volume = 100, bool mute = false );
 
 	void DeleteWallpaper(std::string filePath);
 
