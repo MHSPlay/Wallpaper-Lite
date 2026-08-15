@@ -136,8 +136,10 @@ public:
 
     void LoadWallpaperVolume(WallpaperFolder& wallpaper)
     {
-        std::string configPath = wallpaper.folderName + "\\volume.cfg";
-        std::ifstream file(configPath);
+        std::filesystem::path configDir = std::filesystem::current_path() / "VideoFolder" / wallpaper.folderName;
+        std::filesystem::path configFile = configDir / "volume.cfg";
+
+        std::ifstream file(configFile);
         if (file.is_open())
         {
             int vol = 100, mute = 0;

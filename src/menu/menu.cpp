@@ -224,6 +224,8 @@ auto c_menu::OnRender( bool& exit ) -> void
             {
                 WallpaperFolder& wallpaper = g_utils.wallpapers[ i ];
 
+                g_utils.LoadWallpaperVolume( wallpaper );
+
                 if ( i % itemsPerRow != 0 )
                     ImGui::SameLine();
                 
