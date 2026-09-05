@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="WallpaperLite.vcxproj" Id="a476bc72-079d-4b20-8777-48e7944db609" />
+</Solution>

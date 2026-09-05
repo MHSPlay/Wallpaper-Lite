@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>17.0</VCProjectVersion>
+    <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8fc9da0c-2223-458f-9f1d-da55fbc4d0e8}</ProjectGuid>
+    <ProjectGuid>{a476bc72-079d-4b20-8777-48e7944db609}</ProjectGuid>
     <RootNamespace>WallpaperLite</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -70,22 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;D:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -98,6 +82,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -113,6 +100,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -126,6 +116,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -136,45 +129,48 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Full</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableSegmentHeap>true</EnableSegmentHeap>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core.cpp" />
-    <ClCompile Include="src\menu\menu.cpp" />
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="dependencies\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_tables.cpp" />
+    <ClCompile Include="dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\gui\gui.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="src\utils\utils.cpp" />
-    <ClCompile Include="third-party\imgui\imgui.cpp" />
-    <ClCompile Include="third-party\imgui\imgui_demo.cpp" />
-    <ClCompile Include="third-party\imgui\imgui_draw.cpp" />
-    <ClCompile Include="third-party\imgui\imgui_tables.cpp" />
-    <ClCompile Include="third-party\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="third-party\imgui\impl\imgui_impl_dx11.cpp" />
-    <ClCompile Include="third-party\imgui\impl\imgui_impl_win32.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="dependencies\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="dependencies\imgui\imconfig.h" />
+    <ClInclude Include="dependencies\imgui\imgui.h" />
+    <ClInclude Include="dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="dependencies\stb_image.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\includes.hpp" />
-    <ClInclude Include="src\menu\custom\custom.hpp" />
-    <ClInclude Include="src\menu\menu.hpp" />
-    <ClInclude Include="src\utils\utils.hpp" />
-    <ClInclude Include="third-party\imgui\imconfig.h" />
-    <ClInclude Include="third-party\imgui\imgui.h" />
-    <ClInclude Include="third-party\imgui\imgui_internal.h" />
-    <ClInclude Include="third-party\imgui\impl\imgui_impl_dx11.h" />
-    <ClInclude Include="third-party\imgui\impl\imgui_impl_win32.h" />
-    <ClInclude Include="third-party\imgui\imstb_rectpack.h" />
-    <ClInclude Include="third-party\imgui\imstb_textedit.h" />
-    <ClInclude Include="third-party\imgui\imstb_truetype.h" />
-    <ClInclude Include="third-party\stb_image\stb_image.hpp" />
+    <ClInclude Include="src\gui\gui.h" />
+    <ClInclude Include="src\includes.h" />
+    <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="wpl_icon.ico" />
+    <ResourceCompile Include="WallpaperLite.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Wallpaper-Lite.rc" />
+    <Image Include="..\..\Wallpaper-Lite\wpl_icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

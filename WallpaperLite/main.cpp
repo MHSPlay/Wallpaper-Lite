@@ -1,13 +1,36 @@
-﻿#include "src/includes.hpp"
+#include "src/includes.h"
+#include "resource.h"
 
-// Forward declarations of helper functions
+static ID3D11Device*			g_pd3dDevice = nullptr;
+static ID3D11DeviceContext*		g_pd3dDeviceContext = nullptr;
+static IDXGISwapChain*			g_pSwapChain = nullptr;
+static bool                     g_SwapChainOccluded = false;
+static UINT                     g_ResizeWidth = 0, g_ResizeHeight = 0;
+static ID3D11RenderTargetView*  g_mainRenderTargetView = nullptr;
+
 bool CreateDeviceD3D(HWND hWnd);
 void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
+
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
+static HICON g_appIcon = nullptr;
+static void (*g_prevPlatformCreateWindow)(ImGuiViewport*) = nullptr;
+
+static void ApplyIconOnViewportCreate(ImGuiViewport* vp)
+{
+    if (g_prevPlatformCreateWindow)
+        g_prevPlatformCreateWindow(vp);
+
+    if (HWND h = (HWND)vp->PlatformHandle; h && g_appIcon)
+    {
+        ::SendMessageW(h, WM_SETICON, ICON_BIG, (LPARAM)g_appIcon);
+        ::SendMessageW(h, WM_SETICON, ICON_SMALL, (LPARAM)g_appIcon);
+    }
+}
+
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
     // Make process DPI aware and obtain main monitor scale
     ImGui_ImplWin32_EnableDpiAwareness();
@@ -18,54 +41,53 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     ::RegisterClassExW(&wc);
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Wallpaper Lite", WS_POPUP, 0, 0, 5, 5, nullptr, nullptr, wc.hInstance, nullptr);
 
-    SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
-    MARGINS margin = { -1 };
-    DwmExtendFrameIntoClientArea(hwnd, &margin);
-
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
     {
         CleanupDeviceD3D();
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-        return 1;
+        return TRUE;
     }
-
-    std::thread( [ device = g_pd3dDevice ]( ) 
-    {
-        
-        while ( true ) 
-        {
-
-            g_utils.UpdateFolder( device );
-
-            // save CPU
-            std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
-        }
-
-    }).detach( );
 
     // Show the window
     ::ShowWindow(hwnd, SW_HIDE);
     ::UpdateWindow(hwnd);
 
     // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+    io.IniFilename = nullptr;
 
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
-    style.ScaleAllSizes(main_scale);        // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
+    style.ScaleAllSizes(main_scale);      // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
     style.FontScaleDpi = main_scale;        // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
+    io.ConfigDpiScaleFonts = true;          // [Experimental] Automatically overwrite style.FontScaleDpi in Begin() when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.
+    io.ConfigDpiScaleViewports = true;      // [Experimental] Scale Dear ImGui and Platform Windows when Monitor DPI changes.
+
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
 
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+    g_appIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
+
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+        g_prevPlatformCreateWindow = platform_io.Platform_CreateWindow;
+        platform_io.Platform_CreateWindow = ApplyIconOnViewportCreate;
+    }
 
     // Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
@@ -82,8 +104,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf");
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf");
     //IM_ASSERT(font != nullptr);
-
-    ImVec4 clear_color = ImVec4(0.f, 0.f, 0.f, 0.f);
 
     // Main loop
     bool done = false;
@@ -124,27 +144,30 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        // Menu
+        if (utils)
+            utils->update_folder(g_pd3dDevice);
+
         {
-            g_menu.OnRender( done );
+            gui->on_render( done );
         }
 
         // Rendering
         ImGui::Render();
-        const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+        const float clear_color_with_alpha[4] = { 0, 0, 0, 0 };
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-        if ( io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable )
+        // Update and Render additional Platform Windows
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
-            ImGui::UpdatePlatformWindows( );
-            ImGui::RenderPlatformWindowsDefault( );
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
         }
 
         // Present
         HRESULT hr = g_pSwapChain->Present(1, 0);   // Present with vsync
-        //HRESULT hr = g_pSwapChain->Present(0, 0); // Present without vsync
+        //HRESULT hr = g_pSwapChain->Present( 0, 0 ); // Present without vsync
         g_SwapChainOccluded = (hr == DXGI_STATUS_OCCLUDED);
     }
 
@@ -157,10 +180,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     ::DestroyWindow(hwnd);
     ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
-    return EXIT_SUCCESS;
+    return FALSE;
 }
-
-// Helper functions
 
 bool CreateDeviceD3D(HWND hWnd)
 {

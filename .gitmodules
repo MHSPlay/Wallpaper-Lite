@@ -1,0 +1,4 @@
+[submodule "WallpaperLite/dependencies/imgui"]
+	path = WallpaperLite/dependencies/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
